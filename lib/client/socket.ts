@@ -159,6 +159,38 @@ export const createWebSocket = (
     websocket.emit('error', { type: e.type, description: e.description });
   });
 
+  if (clientOpts.accessToken) {
+    let timeoutHandlerId;
+    let timeoutHandler = async () => {};
+    timeoutHandler = async () => {
+      logger.debug({}, 'Refreshing oauth access token');
+      clearTimeout(timeoutHandlerId);
+      clientOpts.accessToken = await fetchJwt(
+        clientOpts.config.API_BASE_URL,
+        clientOpts.config.brokerClientConfiguration.common.oauth!.clientId,
+        clientOpts.config.brokerClientConfiguration.common.oauth!.clientSecret,
+      );
+
+      websocket.transport.extraHeaders['Authorization'] =
+        clientOpts.accessToken!.authHeader;
+      websocket.end();
+      websocket.open();
+      timeoutHandlerId = setTimeout(
+        timeoutHandler,
+        (clientOpts.accessToken!.expiresIn - 60) * 1000,
+      );
+    };
+
+    timeoutHandlerId = setTimeout(
+      timeoutHandler,
+      (clientOpts.accessToken!.expiresIn - 60) * 1000,
+    );
+  }
+
+  websocket.on('incoming::error', (e) => {
+    websocket.emit('error', { type: e.type, description: e.description });
+  });
+
   logger.info(
     {
       url: localClientOps.config.brokerServerUrlForSocket,
