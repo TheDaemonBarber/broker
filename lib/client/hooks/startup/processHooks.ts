@@ -5,7 +5,7 @@ import { commitSigningEnabled, commitSigningFilterRules } from '../../scm';
 import { HookResults } from '../../types/client';
 import { CheckResult } from '../../checks/types';
 import { ClientOpts } from '../../../common/types/options';
-import { highAvailabilityModeEnabled } from '../../utils/configHelpers';
+import { highAvailabilityModeEnabled } from '../../config/configHelpers';
 
 export const processStartUpHooks = async (
   clientOpts: ClientOpts,

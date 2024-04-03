@@ -1,4 +1,4 @@
-import { getClientConfigMetadata } from '../../lib/client/utils/configHelpers';
+import { getClientConfigMetadata } from '../../lib/client/config/configHelpers';
 import { getConfig, loadBrokerConfig } from '../../lib/common/config/config';
 import { LoadedClientOpts } from '../../lib/common/types/options';
 
